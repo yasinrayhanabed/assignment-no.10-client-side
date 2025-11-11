@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:5000";
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // API endpoints
 export const API_ENDPOINTS = {
@@ -14,7 +14,8 @@ export const API_ENDPOINTS = {
   INSTRUCTOR_COURSES: (email) => `/instructor/${email}`,
   REVIEWS: "/reviews",
   REVIEWS_BY_COURSE: (courseId) => `/reviews/${courseId}`,
-  CERTIFICATE: "/certificate"
+  CERTIFICATE: "/certificate",
+  HEALTH: "/health"
 };
 
 // Helper function for API calls
@@ -30,15 +31,39 @@ export const apiCall = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, config);
-    const data = await response.json();
     
+    // Check if response is ok
     if (!response.ok) {
-      throw new Error(data.error || 'Something went wrong');
+      if (response.status === 404) {
+        throw new Error('API endpoint not found');
+      }
+      if (response.status >= 500) {
+        throw new Error('Server error occurred');
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP ${response.status}`);
     }
     
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error('API call failed:', error);
+    
+    // Handle network errors
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Cannot connect to server. Make sure the backend server is running on ' + BASE_URL);
+    }
+    
     throw error;
+  }
+};
+
+// Function to check server connection
+export const checkServerConnection = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/health`, { method: 'GET' });
+    return response.ok;
+  } catch {
+    return false;
   }
 };
