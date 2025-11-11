@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>LearnHub</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#courses">Courses</a>
+                <a href="#users">Users</a>
+                <button id="addCourseBtn">Add Course</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="courses" class="section">
+            <h2>Available Courses</h2>
+            <div id="coursesList" class="courses-grid"></div>
+        </section>
+
+        <section id="users" class="section">
+            <h2>Users</h2>
+            <div id="usersList" class="users-grid"></div>
+        </section>
+    </main>
+
+    <!-- Add Course Modal -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Add New Course</h3>
+            <form id="courseForm">
+                <input type="text" id="courseTitle" placeholder="Course Title" required>
+                <textarea id="courseDescription" placeholder="Course Description" required></textarea>
+                <input type="text" id="courseInstructor" placeholder="Instructor Name" required>
+                <input type="number" id="courseDuration" placeholder="Duration (hours)" required>
+                <button type="submit">Add Course</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
